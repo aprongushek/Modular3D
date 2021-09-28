@@ -6,8 +6,9 @@ SRCS_DIR = ./srcs
 OBJS_DIR = ./srcs/objs
 
 # flags for linking and compiling
-LDFLAGS = 
-CPPFLAGS = -I$(SRCS_DIR)
+LIBS = -lglew32 -lglfw3dll -lopengl32 -lglu32 -lgdi32 -lmingw32
+LDFLAGS = -L./libs
+CPPFLAGS = -I$(SRCS_DIR) -I./includes
 
 # get .o and .d files
 SRCS := $(shell find $(SRCS_DIR) -name "*.cpp")
@@ -24,7 +25,7 @@ all: $(BIN)/$(EXEC)
 # linking program from object files
 $(BIN)/$(EXEC): $(OBJS)
 	@echo linking $(EXEC)
-	@$(CC) $^ -o $@ $(LDFLAGS)
+	@$(CC) $^ -o $@ $(LDFLAGS) $(LIBS)
 
 # compiling updated source files
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
