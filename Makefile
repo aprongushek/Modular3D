@@ -8,17 +8,16 @@ OBJS_DIR = ./srcs/objs
 # flags for linking and compiling
 LIBS = -lglew32 -lglfw3dll -lopengl32 -lglu32 -lgdi32 -lmingw32
 LDFLAGS = -L./libs
-CPPFLAGS = -I$(SRCS_DIR) -I./includes
+CPPFLAGS = -I$(SRCS_DIR) -I./includes -g
 
-# get .o and .d files
-SRCS := $(shell find $(SRCS_DIR) -name "*.cpp")
-OBJS := $(SRCS:$(SRCS_DIR)/%.cpp=$(OBJS_DIR)/%.o)
-DEPS := $(OBJS:.o=.d)
-
-.PHONY: all run clear
+# getting object and dependencies files
+SRCS = $(wildcard $(SRCS_DIR)/*.cpp)
+OBJS = $(patsubst $(SRCS_DIR)%.cpp,$(OBJS_DIR)%.o,$(SRCS))
+DEPS = $(patsubst %.o,%.d,$(OBJS))
 
 # default target 
 # (build project but dont run)
+.PHONY: all
 all: $(BIN)/$(EXEC)
 	@echo $(EXEC) was built successfully
 
@@ -34,12 +33,14 @@ $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
 	@$(CC) -c -MMD $(CPPFLAGS) $< -o $@
 
 # run program
+.PHONY: all
 run: all
 	@echo running...
 	@$(BIN)/$(EXEC)
 
 # remove executable and object files
-clear:
+.PHONY: clean
+clean:
 	@rm -rf $(OBJS_DIR)
 	@rm -f $(BIN)/$(EXEC)
 
