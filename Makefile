@@ -1,3 +1,4 @@
+SHELL := cmd
 CC = g++
 
 EXEC = Modular3D
@@ -28,12 +29,13 @@ $(BIN)/$(EXEC): $(OBJS)
 
 # compiling updated source files
 $(OBJS_DIR)/%.o: $(SRCS_DIR)/%.cpp
-	@mkdir -p $(dir $@)
+# 	@mkdir -p $(OBJS_DIR)
+	@if not exist "$(OBJS_DIR)" mkdir "$(OBJS_DIR)"
 	@echo compiling $<
 	@$(CC) -c -MMD $(CPPFLAGS) $< -o $@
 
 # run program
-.PHONY: all
+.PHONY: run
 run: all
 	@echo running...
 	@$(BIN)/$(EXEC)
@@ -41,8 +43,10 @@ run: all
 # remove executable and object files
 .PHONY: clean
 clean:
-	@rm -rf $(OBJS_DIR)
-	@rm -f $(BIN)/$(EXEC)
+# 	@rm -rf $(OBJS_DIR)
+# 	@rm -f $(BIN)/$(EXEC)
+	@if exist "$(OBJS_DIR)" rd /s /q "$(OBJS_DIR)"
+	@if exist "$(BIN)/$(EXEC).exe" del /q "$(subst /,\,$(BIN)/$(EXEC).exe)"
 
 # include dependencies
 -include $(DEPS)
